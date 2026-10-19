@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./interfaces/IAssetToken.sol";
 import "./interfaces/IAssetRegistry.sol";
 
@@ -11,7 +12,7 @@ import "./interfaces/IAssetRegistry.sol";
  * @dev ERC-1155 Fractional Asset Token representing fractional ownership
  * of verified real-world assets registered in AssetRegistry.
  */
-contract AssetToken is ERC1155, Ownable, IAssetToken {
+contract AssetToken is ERC1155, Ownable, ReentrancyGuard, IAssetToken {
     IAssetRegistry public assetRegistry;
 
     // assetId => total fraction supply
@@ -63,18 +64,33 @@ contract AssetToken is ERC1155, Ownable, IAssetToken {
 
     /**
      * @dev Mints fractional ownership tokens for an approved asset in AssetRegistry.
+     * Enforces that only the verified asset owner (or platform admin) can initiate tokenization,
+     * and tokens are minted directly into the verified asset owner's wallet.
      * @param assetId The ID of the asset in the registry.
-     * @param recipient The wallet receiving initial fractional tokens (issuer).
+     * @param recipient The wallet receiving initial fractional tokens (must match asset.issuer).
      */
     function tokenizeAsset(
         uint256 assetId,
         address recipient
-    ) external override onlyAdminOrRegistry returns (bool) {
+    ) public override nonReentrant returns (bool) {
         require(address(assetRegistry) != address(0), "AssetRegistry not set");
-        require(!_isTokenized[assetId], "Asset already tokenized");
-        require(recipient != address(0), "Invalid recipient");
 
         IAssetRegistry.AssetRecord memory asset = assetRegistry.getAsset(assetId);
+        require(asset.assetId != 0, "Asset does not exist");
+
+        // Fail-fast authorization check: Caller must be verified owner, contract owner, or registry
+        if (msg.sender == asset.issuer) {
+            require(recipient == asset.issuer, "Recipient must be verified asset owner");
+        } else {
+            require(
+                msg.sender == owner() || msg.sender == address(assetRegistry),
+                "Caller is not authorized asset owner or admin"
+            );
+            require(recipient != address(0), "Invalid recipient");
+        }
+
+        // Asset lifecycle state checks
+        require(!_isTokenized[assetId], "Asset already tokenized");
         require(asset.status == IAssetRegistry.AssetStatus.Approved, "Asset not approved in registry");
         require(asset.totalShares > 0, "Asset shares must be > 0");
 
@@ -82,14 +98,40 @@ contract AssetToken is ERC1155, Ownable, IAssetToken {
         _isTokenized[assetId] = true;
         _assetURIs[assetId] = asset.metadataURI;
 
-        // Mark asset as tokenized in the registry
+        // Atomically mark asset as tokenized in the registry
         assetRegistry.markTokenized(assetId);
 
-        // Mint all fractional shares to the recipient
+        // Mint all fractional shares directly to the verified owner
         _mint(recipient, assetId, asset.totalShares, "");
 
         emit AssetTokenized(assetId, recipient, asset.totalShares, asset.metadataURI);
         return true;
+    }
+
+    /**
+     * @dev Owner-initiated tokenization where recipient is automatically the verified owner.
+     * @param assetId The ID of the asset in the registry.
+     */
+    function tokenize(uint256 assetId) public override returns (bool) {
+        require(address(assetRegistry) != address(0), "AssetRegistry not set");
+        IAssetRegistry.AssetRecord memory asset = assetRegistry.getAsset(assetId);
+        return tokenizeAsset(assetId, asset.issuer);
+    }
+
+    /**
+     * @dev Alias for tokenize(uint256 assetId).
+     */
+    function tokenizeAssetByOwner(uint256 assetId) external override returns (bool) {
+        return tokenize(assetId);
+    }
+
+    /**
+     * @dev Queries the initial reference price calculated by AssetRegistry: Valuation / TotalShares.
+     * @param assetId The ID of the asset.
+     */
+    function getInitialReferencePrice(uint256 assetId) external view override returns (uint256) {
+        require(address(assetRegistry) != address(0), "AssetRegistry not set");
+        return assetRegistry.getInitialReferencePrice(assetId);
     }
 
     /**

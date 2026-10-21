@@ -1,10 +1,10 @@
 {
   "network": "localhost",
   "chainId": 31337,
-  "deployedAt": "2026-10-19T12:57:56.005Z",
+  "deployedAt": "2026-10-21T12:29:54.702Z",
   "contracts": {
     "AssetRegistry": {
-      "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
       "abi": [
         {
           "inputs": [],
@@ -578,7 +578,7 @@
       ]
     },
     "AssetToken": {
-      "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
       "abi": [
         {
           "inputs": [
@@ -1405,7 +1405,7 @@
       ]
     },
     "MockPaymentToken": {
-      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
       "abi": [
         {
           "inputs": [
@@ -1831,7 +1831,7 @@
       ]
     },
     "AssetMarketplace": {
-      "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
       "abi": [
         {
           "inputs": [
@@ -2316,7 +2316,7 @@
       ]
     },
     "TokenMarketplace": {
-      "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+      "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
       "abi": [
         {
           "inputs": [
@@ -2592,6 +2592,24 @@
             }
           ],
           "name": "buyListing",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "listingId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "buyListingAmount",
           "outputs": [],
           "stateMutability": "nonpayable",
           "type": "function"
@@ -2925,7 +2943,7 @@
       ]
     },
     "AssetGovernance": {
-      "address": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+      "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
       "abi": [
         {
           "inputs": [
@@ -3449,7 +3467,7 @@
       ]
     },
     "SnapshotProfitDistribution": {
-      "address": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+      "address": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
       "abi": [
         {
           "inputs": [
@@ -3891,7 +3909,7 @@
       ]
     },
     "ProfitDistribution": {
-      "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+      "address": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
       "abi": [
         {
           "inputs": [
@@ -4566,6 +4584,604 @@
           "name": "transferOwnership",
           "outputs": [],
           "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ]
+    },
+    "AssetValuationRegistry": {
+      "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "registry",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "admin",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        {
+          "inputs": [],
+          "name": "AccessControlBadConfirmation",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "neededRole",
+              "type": "bytes32"
+            }
+          ],
+          "name": "AccessControlUnauthorizedAccount",
+          "type": "error"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32"
+            },
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "previousAdminRole",
+              "type": "bytes32"
+            },
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "newAdminRole",
+              "type": "bytes32"
+            }
+          ],
+          "name": "RoleAdminChanged",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "sender",
+              "type": "address"
+            }
+          ],
+          "name": "RoleGranted",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "sender",
+              "type": "address"
+            }
+          ],
+          "name": "RoleRevoked",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "uint64",
+              "name": "version",
+              "type": "uint64"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "previousValuation",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "newValuation",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "tokenSupply",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "currency",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint64",
+              "name": "effectiveDate",
+              "type": "uint64"
+            },
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "reportHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "proposalRef",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "publisher",
+              "type": "address"
+            }
+          ],
+          "name": "ValuationPublished",
+          "type": "event"
+        },
+        {
+          "inputs": [],
+          "name": "CURRENCY_LKR",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "DEFAULT_ADMIN_ROLE",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "VALUATION_PUBLISHER_ROLE",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "assetRegistry",
+          "outputs": [
+            {
+              "internalType": "contract IAssetRegistry",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "assetToken",
+          "outputs": [
+            {
+              "internalType": "contract IAssetToken",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            }
+          ],
+          "name": "getHistory",
+          "outputs": [
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "version",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "valuation",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "currency",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "effectiveDate",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "reportHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "proposalRef",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "previousValuation",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenSupply",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "publisher",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "publishedAt",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct AssetValuationRegistry.ValuationRecord[]",
+              "name": "",
+              "type": "tuple[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            }
+          ],
+          "name": "getReferencePriceCents",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32"
+            }
+          ],
+          "name": "getRoleAdmin",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "version",
+              "type": "uint64"
+            }
+          ],
+          "name": "getValuation",
+          "outputs": [
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "version",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "valuation",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "currency",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "effectiveDate",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "reportHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "proposalRef",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "previousValuation",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenSupply",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "publisher",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "publishedAt",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct AssetValuationRegistry.ValuationRecord",
+              "name": "",
+              "type": "tuple"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "grantRole",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "hasRole",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            }
+          ],
+          "name": "latestVersion",
+          "outputs": [
+            {
+              "internalType": "uint64",
+              "name": "",
+              "type": "uint64"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "version",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint256",
+              "name": "newValuation",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "currency",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint64",
+              "name": "effectiveDate",
+              "type": "uint64"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "reportHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "proposalRef",
+              "type": "bytes32"
+            }
+          ],
+          "name": "publishValuation",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "address",
+              "name": "callerConfirmation",
+              "type": "address"
+            }
+          ],
+          "name": "renounceRole",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "revokeRole",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes4",
+              "name": "interfaceId",
+              "type": "bytes4"
+            }
+          ],
+          "name": "supportsInterface",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
           "type": "function"
         }
       ]

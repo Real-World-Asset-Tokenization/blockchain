@@ -71,6 +71,15 @@ async function main() {
   const distributionAddress = await distribution.getAddress();
   console.log("✔ [8/8] ProfitDistribution (Merkle Settlement) deployed to:", distributionAddress);
 
+  // 9. Deploy AssetValuationRegistry (versioned, authorized revaluations)
+  const AssetValuationRegistry = await hre.ethers.getContractFactory("AssetValuationRegistry");
+  const valuationRegistry = await AssetValuationRegistry.deploy(registryAddress, tokenAddress, deployer.address);
+  await valuationRegistry.waitForDeployment();
+  const valuationRegistryAddress = await valuationRegistry.getAddress();
+  // It updates AssetRegistry.valuationLKR when publishing, so it must be an authorized verifier.
+  await (await registry.setAuthorizedVerifier(valuationRegistryAddress, true)).wait();
+  console.log("✔ [9/9] AssetValuationRegistry deployed to:", valuationRegistryAddress);
+
   // Configure Authorized Callers on AssetToken for snapshots
   await (await assetToken.setAuthorizedCaller(governanceAddress, true)).wait();
   await (await assetToken.setAuthorizedCaller(snapshotDistributionAddress, true)).wait();
@@ -92,109 +101,7 @@ async function main() {
   }
   console.log(`✔ Funded all ${allSigners.length} test accounts & demo personas with 100,000 mUSD each`);
 
-  // 9. Seed Real-World Assets & Multi-User Distribution
-  console.log("\n--- Seeding Initial Real-World Assets & Multi-User Holdings ---");
-
-  // Asset 1: Colombo Oceanfront Residence (10M LKR, 1000 shares)
-  const tx1 = await registry.registerAsset(
-    "Colombo Oceanfront Residence",
-    "COR-01",
-    "ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi/colombo-apartment.json",
-    "0x9f83c6138438914b1bf0597bc5f8f5339f40feef2c95e5d326f9661d9a5b6d92",
-    10000000n,
-    1000n
-  );
-  await tx1.wait();
-  await (await registry.approveAsset(1)).wait();
-  await (await assetToken.tokenizeAsset(1, deployer.address)).wait();
-  console.log("✔ Seeded & Tokenized Asset #1: Colombo Oceanfront Residence (1,000 shares)");
-
-  // Transfer shares to model multi-user test personas (A=500, B=300, C=200)
-  if (user1 && user2) {
-    // Deployer retains 500 shares (Investor A)
-    // Transfer 300 shares to user1 (Investor B)
-    await (await assetToken.safeTransferFrom(deployer.address, user1.address, 1, 300n, "0x")).wait();
-    console.log(`✔ Distributed 300 shares to User 1 (${user1.address})`);
-
-    if (user3) {
-      // Transfer 200 shares to user2 (Investor C)
-      await (await assetToken.safeTransferFrom(deployer.address, user2.address, 1, 200n, "0x")).wait();
-      console.log(`✔ Distributed 200 shares to User 2 (${user2.address})`);
-    }
-  }
-
-  // Asset 2: Kandy Commercial Business Park (Pending verification)
-  const tx2 = await registry.registerAsset(
-    "Kandy Royal Commercial Plaza",
-    "KRP-02",
-    "ipfs://bafybeihkoviema7g3gx4e2lrtqfop4x42m66x4o2j2v65p3zldu54nhe2y/kandy-plaza.json",
-    "0x7c2d5e3f4b6a9c1e2d3b4a5c6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f",
-    50000000n,
-    5000n
-  );
-  await tx2.wait();
-  console.log("✔ Seeded Asset #2: Kandy Royal Commercial Plaza (5,000 shares, Pending)");
-
-  // Asset 3: Galle Heritage Boutique Villa (Pending verification)
-  const tx3 = await registry.registerAsset(
-    "Galle Dutch Fort Heritage Villa",
-    "GFV-03",
-    "ipfs://bafybeicg4f3qpm5u3vx6z7h4h7q2x6o2q4f5o6z7a8b9c0d1e2f3a4b5c6/galle-villa.json",
-    "0x4a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b",
-    25000000n,
-    2500n
-  );
-  await tx3.wait();
-  console.log("✔ Seeded Asset #3: Galle Dutch Fort Heritage Villa (2,500 shares, Pending)");
-
-  // Asset 4: Nuwara Eliya High-Grown Tea Estate (Approved, ready for tokenization)
-  const tx4 = await registry.registerAsset(
-    "Nuwara Eliya High-Grown Tea Estate",
-    "NTE-04",
-    "ipfs://bafybeihnuwara4teaestate7y26nf3efuylqabf3oclgtqy55fbzdi/tea-estate.json",
-    "0x5b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c",
-    40000000n,
-    4000n
-  );
-  await tx4.wait();
-  await (await registry.approveAsset(4)).wait();
-  console.log("✔ Seeded Asset #4: Nuwara Eliya High-Grown Tea Estate (4,000 shares, Approved)");
-
-  // 10. Seed Sample Marketplace Listings & Governance
-  console.log("\n--- Seeding Sample Marketplace Listings & Governance ---");
-  // Original ETH marketplace listing
-  await (await assetToken.setApprovalForAll(marketplaceAddress, true)).wait();
-  const listTx = await marketplace.listItem(1, 50n, hre.ethers.parseEther("0.02"));
-  await listTx.wait();
-  console.log("✔ Created AssetMarketplace Listing: 50 shares of Asset #1 @ 0.02 ETH / share");
-
-  // Non-Custodial TokenMarketplace listing (50 shares @ 100 mUSD)
-  await (await assetToken.setApprovalForAll(tokenMarketplaceAddress, true)).wait();
-  const tokenListTx = await tokenMarketplace.createListing(
-    1,
-    50n,
-    hre.ethers.parseUnits("100", 6), // 100 mUSD per token
-    paymentTokenAddress,
-    86400 * 30 // 30 days
-  );
-  await tokenListTx.wait();
-  console.log("✔ Created TokenMarketplace Listing: 50 shares of Asset #1 @ 100 mUSD / token");
-
-  // Seed Governance Proposal
-  const propTx = await governance.createProposal(
-    1,
-    "Approve Solar Photovoltaic Grid Installation to Boost Rental NOI by 18%",
-    5000
-  );
-  await propTx.wait();
-  console.log("✔ Created Governance Proposal #1 on Asset #1 with snapshot voting");
-
-  // Seed Baseline Snapshot Profit Distribution Period
-  const distTx = await snapshotDistribution.fundDistribution(1, "2026-Q1 Rental Income Waterfall", {
-    value: hre.ethers.parseEther("0.5")
-  });
-  await distTx.wait();
-  console.log("✔ Funded Baseline Snapshot Profit Distribution with 0.5 ETH yield pool");
+  // No demo properties, holdings, listings or proposals are created here. Properties are registered through the app.
 
   // 11. Export Deployments & ABIs
   const networkName = hre.network.name;
@@ -234,6 +141,10 @@ async function main() {
       ProfitDistribution: {
         address: distributionAddress,
         abi: JSON.parse(fs.readFileSync(path.join(__dirname, "../artifacts/contracts/ProfitDistribution.sol/ProfitDistribution.json"))).abi
+      },
+      AssetValuationRegistry: {
+        address: valuationRegistryAddress,
+        abi: JSON.parse(fs.readFileSync(path.join(__dirname, "../artifacts/contracts/AssetValuationRegistry.sol/AssetValuationRegistry.json"))).abi
       }
     }
   };

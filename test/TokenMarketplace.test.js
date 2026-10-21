@@ -131,6 +131,28 @@ describe("TokenMarketplace Contract - Non-Custodial Trading Suite", function () 
       );
     });
 
+    it("Supports partial purchases and preserves the remaining offer", async function () {
+      await paymentToken.connect(buyer).approve(await marketplace.getAddress(), 100n * PRICE_PER_TOKEN);
+      await expect(marketplace.connect(buyer).buyListingAmount(1, 25))
+        .to.emit(marketplace, "ListingPurchased")
+        .withArgs(1, buyer.address, seller.address, 1, 25, 25n * PRICE_PER_TOKEN, 25n * PRICE_PER_TOKEN / 100n, await paymentToken.getAddress());
+      const remaining = await marketplace.getListing(1);
+      expect(remaining.amount).to.equal(75);
+      expect(remaining.status).to.equal(0);
+      expect(await assetToken.balanceOf(buyer.address, 1)).to.equal(25);
+      expect(await assetToken.balanceOf(seller.address, 1)).to.equal(975);
+      await marketplace.connect(buyer).buyListing(1);
+      expect((await marketplace.getListing(1)).amount).to.equal(0);
+      expect((await marketplace.getListing(1)).status).to.equal(1);
+      expect(await assetToken.balanceOf(buyer.address, 1)).to.equal(100);
+    });
+
+    it("Rejects invalid partial quantities and leaves the offer unchanged", async function () {
+      await expect(marketplace.connect(buyer).buyListingAmount(1, 0)).to.be.revertedWith("Invalid purchase amount");
+      await expect(marketplace.connect(buyer).buyListingAmount(1, 101)).to.be.revertedWith("Invalid purchase amount");
+      expect((await marketplace.getListing(1)).amount).to.equal(100);
+    });
+
     it("Buyer purchases listing: atomic settlement, fees, and ownership transfer", async function () {
       const totalPrice = 100n * PRICE_PER_TOKEN; // 10,000 mUSD
       const expectedPlatformFee = (totalPrice * FEE_BPS) / 10000n; // 100 mUSD (1%)

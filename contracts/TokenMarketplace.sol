@@ -163,6 +163,14 @@ contract TokenMarketplace is Ownable, ReentrancyGuard {
      * Transfers ERC-1155 asset tokens directly from seller to buyer.
      */
     function buyListing(uint256 listingId) external nonReentrant {
+        _buyListing(listingId, listings[listingId].amount);
+    }
+
+    function buyListingAmount(uint256 listingId, uint256 amount) external nonReentrant {
+        _buyListing(listingId, amount);
+    }
+
+    function _buyListing(uint256 listingId, uint256 amount) internal {
         Listing storage listing = listings[listingId];
         require(listing.listingId != 0, "Listing does not exist");
         require(listing.status == ListingStatus.Active, "Listing not active");
@@ -173,7 +181,7 @@ contract TokenMarketplace is Ownable, ReentrancyGuard {
         address seller = listing.seller;
         require(msg.sender != seller, "Seller cannot purchase own listing");
 
-        uint256 amount = listing.amount;
+        require(amount > 0 && amount <= listing.amount, "Invalid purchase amount");
         uint256 assetId = listing.assetId;
         address paymentTokenAddress = listing.paymentToken;
 
@@ -185,8 +193,9 @@ contract TokenMarketplace is Ownable, ReentrancyGuard {
         uint256 platformFee = (totalPrice * feeBps) / 10000;
         uint256 sellerProceeds = totalPrice - platformFee;
 
-        // Effects: mark listing completed before transfers
-        listing.status = ListingStatus.Completed;
+        // Reduce the remaining offer before interactions; keep partial fills active.
+        listing.amount -= amount;
+        if (listing.amount == 0) listing.status = ListingStatus.Completed;
 
         IERC20 paymentToken = IERC20(paymentTokenAddress);
 

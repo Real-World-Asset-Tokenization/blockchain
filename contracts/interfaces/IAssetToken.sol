@@ -30,6 +30,10 @@ interface IAssetToken is IERC1155 {
     function getAssetRegistry() external view returns (address);
     function getInitialReferencePrice(uint256 assetId) external view returns (uint256);
 
+    // Freezes holder-to-holder transfers of an asset while a full-property sale vote runs
+    function setTransfersLocked(uint256 assetId, bool locked) external;
+    function transfersLocked(uint256 assetId) external view returns (bool);
+
     // Snapshot mechanism for Governance & Profit Distribution modules
     function createSnapshot(uint256 assetId) external returns (uint256);
     function balanceOfAtSnapshot(

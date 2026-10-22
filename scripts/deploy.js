@@ -78,12 +78,22 @@ async function main() {
   const valuationRegistryAddress = await valuationRegistry.getAddress();
   // It updates AssetRegistry.valuationLKR when publishing, so it must be an authorized verifier.
   await (await registry.setAuthorizedVerifier(valuationRegistryAddress, true)).wait();
+  // Offers that follow the approved price read it from this registry.
+  await (await tokenMarketplace.setValuationRegistry(valuationRegistryAddress)).wait();
   console.log("✔ [9/9] AssetValuationRegistry deployed to:", valuationRegistryAddress);
 
-  // Configure Authorized Callers on AssetToken for snapshots
+  // 10. Deploy PropertySale (full-property sale: escrow, >50% token vote, Merkle payout)
+  const PropertySale = await hre.ethers.getContractFactory("PropertySale");
+  const propertySale = await PropertySale.deploy(tokenAddress);
+  await propertySale.waitForDeployment();
+  const propertySaleAddress = await propertySale.getAddress();
+  console.log("✔ [10/10] PropertySale deployed to:", propertySaleAddress);
+
+  // Configure Authorized Callers on AssetToken for snapshots (PropertySale also locks transfers during a sale vote)
   await (await assetToken.setAuthorizedCaller(governanceAddress, true)).wait();
   await (await assetToken.setAuthorizedCaller(snapshotDistributionAddress, true)).wait();
-  console.log("✔ Configured Governance & SnapshotDistribution as callers on AssetToken");
+  await (await assetToken.setAuthorizedCaller(propertySaleAddress, true)).wait();
+  console.log("✔ Configured Governance, SnapshotDistribution & PropertySale as callers on AssetToken");
 
   // Fund all signers and test personas with MockPaymentTokens (100,000 mUSD each)
   const allSigners = await hre.ethers.getSigners();
@@ -145,6 +155,10 @@ async function main() {
       AssetValuationRegistry: {
         address: valuationRegistryAddress,
         abi: JSON.parse(fs.readFileSync(path.join(__dirname, "../artifacts/contracts/AssetValuationRegistry.sol/AssetValuationRegistry.json"))).abi
+      },
+      PropertySale: {
+        address: propertySaleAddress,
+        abi: JSON.parse(fs.readFileSync(path.join(__dirname, "../artifacts/contracts/PropertySale.sol/PropertySale.json"))).abi
       }
     }
   };

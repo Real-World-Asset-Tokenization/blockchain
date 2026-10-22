@@ -1,10 +1,10 @@
 {
   "network": "localhost",
   "chainId": 31337,
-  "deployedAt": "2026-10-21T12:29:54.702Z",
+  "deployedAt": "2026-10-22T09:41:45.434Z",
   "contracts": {
     "AssetRegistry": {
-      "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "address": "0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d",
       "abi": [
         {
           "inputs": [],
@@ -578,7 +578,7 @@
       ]
     },
     "AssetToken": {
-      "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      "address": "0xdbC43Ba45381e02825b14322cDdd15eC4B3164E6",
       "abi": [
         {
           "inputs": [
@@ -892,6 +892,25 @@
             }
           ],
           "name": "TransferSingle",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "bool",
+              "name": "locked",
+              "type": "bool"
+            }
+          ],
+          "name": "TransfersLockChanged",
           "type": "event"
         },
         {
@@ -1273,6 +1292,24 @@
         {
           "inputs": [
             {
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "locked",
+              "type": "bool"
+            }
+          ],
+          "name": "setTransfersLocked",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
               "internalType": "bytes4",
               "name": "interfaceId",
               "type": "bytes4"
@@ -1387,6 +1424,25 @@
           "inputs": [
             {
               "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "transfersLocked",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
               "name": "assetId",
               "type": "uint256"
             }
@@ -1405,7 +1461,7 @@
       ]
     },
     "MockPaymentToken": {
-      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "address": "0x4C4a2f8c81640e47606d3fd77B353E87Ba015584",
       "abi": [
         {
           "inputs": [
@@ -1427,6 +1483,33 @@
           ],
           "stateMutability": "nonpayable",
           "type": "constructor"
+        },
+        {
+          "inputs": [],
+          "name": "ECDSAInvalidSignature",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "length",
+              "type": "uint256"
+            }
+          ],
+          "name": "ECDSAInvalidSignatureLength",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "s",
+              "type": "bytes32"
+            }
+          ],
+          "name": "ECDSAInvalidSignatureS",
+          "type": "error"
         },
         {
           "inputs": [
@@ -1517,6 +1600,54 @@
         {
           "inputs": [
             {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "ERC2612ExpiredSignature",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "signer",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "ERC2612InvalidSigner",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "currentNonce",
+              "type": "uint256"
+            }
+          ],
+          "name": "InvalidAccountNonce",
+          "type": "error"
+        },
+        {
+          "inputs": [],
+          "name": "InvalidShortString",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
               "internalType": "address",
               "name": "owner",
               "type": "address"
@@ -1534,6 +1665,17 @@
             }
           ],
           "name": "OwnableUnauthorizedAccount",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "str",
+              "type": "string"
+            }
+          ],
+          "name": "StringTooLong",
           "type": "error"
         },
         {
@@ -1559,6 +1701,12 @@
             }
           ],
           "name": "Approval",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [],
+          "name": "EIP712DomainChanged",
           "type": "event"
         },
         {
@@ -1604,6 +1752,19 @@
           ],
           "name": "Transfer",
           "type": "event"
+        },
+        {
+          "inputs": [],
+          "name": "DOMAIN_SEPARATOR",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
         },
         {
           "inputs": [
@@ -1686,6 +1847,49 @@
           "type": "function"
         },
         {
+          "inputs": [],
+          "name": "eip712Domain",
+          "outputs": [
+            {
+              "internalType": "bytes1",
+              "name": "fields",
+              "type": "bytes1"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "verifyingContract",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "salt",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "extensions",
+              "type": "uint256[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
           "inputs": [
             {
               "internalType": "address",
@@ -1717,6 +1921,25 @@
           "type": "function"
         },
         {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "nonces",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
           "inputs": [],
           "name": "owner",
           "outputs": [
@@ -1727,6 +1950,49 @@
             }
           ],
           "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint8",
+              "name": "v",
+              "type": "uint8"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "r",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "s",
+              "type": "bytes32"
+            }
+          ],
+          "name": "permit",
+          "outputs": [],
+          "stateMutability": "nonpayable",
           "type": "function"
         },
         {
@@ -1831,7 +2097,7 @@
       ]
     },
     "AssetMarketplace": {
-      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      "address": "0x21dF544947ba3E8b3c32561399E88B52Dc8b2823",
       "abi": [
         {
           "inputs": [
@@ -2316,7 +2582,7 @@
       ]
     },
     "TokenMarketplace": {
-      "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+      "address": "0x07882Ae1ecB7429a84f1D53048d35c4bB2056877",
       "abi": [
         {
           "inputs": [
@@ -2338,6 +2604,38 @@
           ],
           "stateMutability": "nonpayable",
           "type": "constructor"
+        },
+        {
+          "inputs": [],
+          "name": "ECDSAInvalidSignature",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "length",
+              "type": "uint256"
+            }
+          ],
+          "name": "ECDSAInvalidSignatureLength",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "s",
+              "type": "bytes32"
+            }
+          ],
+          "name": "ECDSAInvalidSignatureS",
+          "type": "error"
+        },
+        {
+          "inputs": [],
+          "name": "InvalidShortString",
+          "type": "error"
         },
         {
           "inputs": [
@@ -2376,6 +2674,23 @@
           ],
           "name": "SafeERC20FailedOperation",
           "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "str",
+              "type": "string"
+            }
+          ],
+          "name": "StringTooLong",
+          "type": "error"
+        },
+        {
+          "anonymous": false,
+          "inputs": [],
+          "name": "EIP712DomainChanged",
+          "type": "event"
         },
         {
           "anonymous": false,
@@ -2504,6 +2819,25 @@
           "anonymous": false,
           "inputs": [
             {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "oldRateX100",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "newRateX100",
+              "type": "uint256"
+            }
+          ],
+          "name": "LkrRateUpdated",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
               "indexed": true,
               "internalType": "address",
               "name": "previousOwner",
@@ -2542,6 +2876,130 @@
           "anonymous": false,
           "inputs": [
             {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "issuer",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "seller",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "RoyaltyPaid",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "oldRoyaltyBps",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "newRoyaltyBps",
+              "type": "uint256"
+            }
+          ],
+          "name": "RoyaltyUpdated",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "orderHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "seller",
+              "type": "address"
+            }
+          ],
+          "name": "SignedOrderCancelled",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "orderHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "seller",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "buyer",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "totalPrice",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "platformFee",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "paymentToken",
+              "type": "address"
+            }
+          ],
+          "name": "SignedOrderFilled",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
               "indexed": false,
               "internalType": "address",
               "name": "oldTreasury",
@@ -2558,6 +3016,32 @@
           "type": "event"
         },
         {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "registry",
+              "type": "address"
+            }
+          ],
+          "name": "ValuationRegistryUpdated",
+          "type": "event"
+        },
+        {
+          "inputs": [],
+          "name": "FOLLOW_ORDER_TYPEHASH",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
           "inputs": [],
           "name": "MAX_FEE_BPS",
           "outputs": [
@@ -2565,6 +3049,58 @@
               "internalType": "uint256",
               "name": "",
               "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "MAX_PREMIUM_BPS",
+          "outputs": [
+            {
+              "internalType": "int256",
+              "name": "",
+              "type": "int256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "MAX_ROYALTY_BPS",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "MIN_PREMIUM_BPS",
+          "outputs": [
+            {
+              "internalType": "int256",
+              "name": "",
+              "type": "int256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "ORDER_TYPEHASH",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
             }
           ],
           "stateMutability": "view",
@@ -2617,12 +3153,117 @@
         {
           "inputs": [
             {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "assetId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "premiumBps",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "floorPrice",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "paymentToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "expiry",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "salt",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct TokenMarketplace.FollowOrder",
+              "name": "order",
+              "type": "tuple"
+            }
+          ],
+          "name": "cancelFollowOrder",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
               "internalType": "uint256",
               "name": "listingId",
               "type": "uint256"
             }
           ],
           "name": "cancelListing",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "assetId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "pricePerToken",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "paymentToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "expiry",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "salt",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct TokenMarketplace.Order",
+              "name": "order",
+              "type": "tuple"
+            }
+          ],
+          "name": "cancelSignedOrder",
           "outputs": [],
           "stateMutability": "nonpayable",
           "type": "function"
@@ -2668,11 +3309,415 @@
         },
         {
           "inputs": [],
+          "name": "eip712Domain",
+          "outputs": [
+            {
+              "internalType": "bytes1",
+              "name": "fields",
+              "type": "bytes1"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "verifyingContract",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "salt",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "extensions",
+              "type": "uint256[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
           "name": "feeBps",
           "outputs": [
             {
               "internalType": "uint256",
               "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "assetId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "premiumBps",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "floorPrice",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "paymentToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "expiry",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "salt",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct TokenMarketplace.FollowOrder",
+              "name": "order",
+              "type": "tuple"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPricePerToken",
+              "type": "uint256"
+            }
+          ],
+          "name": "fillFollowOrder",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "assetId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "premiumBps",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "floorPrice",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "paymentToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "expiry",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "salt",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct TokenMarketplace.FollowOrder",
+              "name": "order",
+              "type": "tuple"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPricePerToken",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "permitDeadline",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint8",
+              "name": "v",
+              "type": "uint8"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "r",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "s",
+              "type": "bytes32"
+            }
+          ],
+          "name": "fillFollowOrderWithPermit",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "assetId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "pricePerToken",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "paymentToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "expiry",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "salt",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct TokenMarketplace.Order",
+              "name": "order",
+              "type": "tuple"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "fillSignedOrder",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "assetId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "pricePerToken",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "paymentToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "expiry",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "salt",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct TokenMarketplace.Order",
+              "name": "order",
+              "type": "tuple"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "permitDeadline",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint8",
+              "name": "v",
+              "type": "uint8"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "r",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "s",
+              "type": "bytes32"
+            }
+          ],
+          "name": "fillSignedOrderWithPermit",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "assetId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "premiumBps",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "floorPrice",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "paymentToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "expiry",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "salt",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct TokenMarketplace.FollowOrder",
+              "name": "order",
+              "type": "tuple"
+            }
+          ],
+          "name": "followPrice",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "price",
               "type": "uint256"
             }
           ],
@@ -2786,6 +3831,123 @@
         {
           "inputs": [
             {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "assetId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "premiumBps",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "floorPrice",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "paymentToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "expiry",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "salt",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct TokenMarketplace.FollowOrder",
+              "name": "order",
+              "type": "tuple"
+            }
+          ],
+          "name": "hashFollowOrder",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "seller",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "assetId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "pricePerToken",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "paymentToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "expiry",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "salt",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct TokenMarketplace.Order",
+              "name": "order",
+              "type": "tuple"
+            }
+          ],
+          "name": "hashOrder",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
               "internalType": "uint256",
               "name": "",
               "type": "uint256"
@@ -2844,7 +4006,58 @@
         },
         {
           "inputs": [],
+          "name": "lkrPerUsdX100",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
           "name": "nextListingId",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "name": "orderCancelled",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "name": "orderFilled",
           "outputs": [
             {
               "internalType": "uint256",
@@ -2869,10 +4082,42 @@
           "type": "function"
         },
         {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            }
+          ],
+          "name": "referencePrice",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
           "inputs": [],
           "name": "renounceOwnership",
           "outputs": [],
           "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "royaltyBps",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
           "type": "function"
         },
         {
@@ -2891,12 +4136,51 @@
         {
           "inputs": [
             {
+              "internalType": "uint256",
+              "name": "rateX100",
+              "type": "uint256"
+            }
+          ],
+          "name": "setLkrPerUsd",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_royaltyBps",
+              "type": "uint256"
+            }
+          ],
+          "name": "setRoyaltyBps",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
               "internalType": "address",
               "name": "_treasury",
               "type": "address"
             }
           ],
           "name": "setTreasury",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "registry",
+              "type": "address"
+            }
+          ],
+          "name": "setValuationRegistry",
           "outputs": [],
           "stateMutability": "nonpayable",
           "type": "function"
@@ -2939,11 +4223,24 @@
           ],
           "stateMutability": "view",
           "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "valuation",
+          "outputs": [
+            {
+              "internalType": "contract IReferencePrice",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
         }
       ]
     },
     "AssetGovernance": {
-      "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+      "address": "0xD8a5a9b31c3C0232E196d518E89Fd8bF83AcAd43",
       "abi": [
         {
           "inputs": [
@@ -3467,7 +4764,7 @@
       ]
     },
     "SnapshotProfitDistribution": {
-      "address": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+      "address": "0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD",
       "abi": [
         {
           "inputs": [
@@ -3909,7 +5206,7 @@
       ]
     },
     "ProfitDistribution": {
-      "address": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+      "address": "0x51A1ceB83B83F1985a81C295d1fF28Afef186E02",
       "abi": [
         {
           "inputs": [
@@ -4589,7 +5886,7 @@
       ]
     },
     "AssetValuationRegistry": {
-      "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+      "address": "0x36b58F5C1969B7b6591D752ea6F5486D069010AB",
       "abi": [
         {
           "inputs": [
@@ -5185,6 +6482,914 @@
           "type": "function"
         }
       ]
+    },
+    "PropertySale": {
+      "address": "0x0355B7B8cb128fA5692729Ab3AAa199C1753f726",
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_assetToken",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        {
+          "inputs": [],
+          "name": "InvalidShortString",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnableInvalidOwner",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "OwnableUnauthorizedAccount",
+          "type": "error"
+        },
+        {
+          "inputs": [],
+          "name": "ReentrancyGuardReentrantCall",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            }
+          ],
+          "name": "SafeERC20FailedOperation",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "str",
+              "type": "string"
+            }
+          ],
+          "name": "StringTooLong",
+          "type": "error"
+        },
+        {
+          "anonymous": false,
+          "inputs": [],
+          "name": "EIP712DomainChanged",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "refunded",
+              "type": "uint256"
+            }
+          ],
+          "name": "OfferCancelled",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "buyer",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "paymentToken",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "votingDuration",
+              "type": "uint256"
+            }
+          ],
+          "name": "OfferCreated",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum PropertySale.OfferStatus",
+              "name": "status",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "yesVotes",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "noVotes",
+              "type": "uint256"
+            }
+          ],
+          "name": "OfferFinalized",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "claimant",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "SaleClaimed",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "merkleRoot",
+              "type": "bytes32"
+            }
+          ],
+          "name": "SaleSettled",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "voter",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint8",
+              "name": "support",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "weight",
+              "type": "uint256"
+            }
+          ],
+          "name": "VoteCast",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "snapshotId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "votingEndsAt",
+              "type": "uint256"
+            }
+          ],
+          "name": "VotingOpened",
+          "type": "event"
+        },
+        {
+          "inputs": [],
+          "name": "VOTE_NO",
+          "outputs": [
+            {
+              "internalType": "uint8",
+              "name": "",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "VOTE_TYPEHASH",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "VOTE_YES",
+          "outputs": [
+            {
+              "internalType": "uint8",
+              "name": "",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "assetToken",
+          "outputs": [
+            {
+              "internalType": "contract IAssetToken",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            }
+          ],
+          "name": "cancelOffer",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint8",
+              "name": "support",
+              "type": "uint8"
+            }
+          ],
+          "name": "castVote",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint8[]",
+              "name": "choices",
+              "type": "uint8[]"
+            },
+            {
+              "internalType": "bytes[]",
+              "name": "signatures",
+              "type": "bytes[]"
+            }
+          ],
+          "name": "castVotesBySig",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "counted",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "merkleProof",
+              "type": "bytes32[]"
+            }
+          ],
+          "name": "claim",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "merkleRoot",
+              "type": "bytes32"
+            }
+          ],
+          "name": "confirmSale",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "paymentToken",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "votingDuration",
+              "type": "uint256"
+            }
+          ],
+          "name": "createOffer",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "eip712Domain",
+          "outputs": [
+            {
+              "internalType": "bytes1",
+              "name": "fields",
+              "type": "bytes1"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "verifyingContract",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "salt",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "extensions",
+              "type": "uint256[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            }
+          ],
+          "name": "finalize",
+          "outputs": [
+            {
+              "internalType": "enum PropertySale.OfferStatus",
+              "name": "",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "claimant",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "getLeafHash",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            }
+          ],
+          "name": "getOffer",
+          "outputs": [
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "offerId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "assetId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "buyer",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "paymentToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "votingDuration",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "votingEndsAt",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "snapshotId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "yesVotes",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "noVotes",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "merkleRoot",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "claimedAmount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum PropertySale.OfferStatus",
+                  "name": "status",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct PropertySale.Offer",
+              "name": "",
+              "type": "tuple"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "name": "hasClaimed",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "name": "hasVoted",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "liveOfferOf",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "nextOfferId",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "offers",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "assetId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "buyer",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "paymentToken",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "votingDuration",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "votingEndsAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "snapshotId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "yesVotes",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "noVotes",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "merkleRoot",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "claimedAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum PropertySale.OfferStatus",
+              "name": "status",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            }
+          ],
+          "name": "openVoting",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "owner",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "renounceOwnership",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "transferOwnership",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "votingPowerBps",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            }
+          ],
+          "name": "withdrawOffer",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ]
     }
-  }
+  },
+  "previousTokenMarketplaces": [
+    "0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2"
+  ]
 }

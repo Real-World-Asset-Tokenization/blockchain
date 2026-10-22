@@ -31,6 +31,11 @@ contract AssetToken is ERC1155, Ownable, ReentrancyGuard, IAssetToken {
     // Authorized callers for taking snapshots (e.g. Governance or Profit Distribution contracts)
     mapping(address => bool) public authorizedCallers;
 
+    // assetId => holder-to-holder transfers frozen (set while a full-property sale is in progress)
+    mapping(uint256 => bool) public override transfersLocked;
+
+    event TransfersLockChanged(uint256 indexed assetId, bool locked);
+
     modifier onlyAdminOrRegistry() {
         require(
             msg.sender == owner() || msg.sender == address(assetRegistry),
@@ -147,6 +152,17 @@ contract AssetToken is ERC1155, Ownable, ReentrancyGuard, IAssetToken {
     }
 
     /**
+     * @dev Freezes or unfreezes transfers between holders of an asset. Minting is not affected.
+     * The sale contract locks transfers while owners vote so the vote snapshot and the payout
+     * snapshot stay identical.
+     */
+    function setTransfersLocked(uint256 assetId, bool locked) external override onlyAuthorized {
+        require(_isTokenized[assetId], "Asset not tokenized");
+        transfersLocked[assetId] = locked;
+        emit TransfersLockChanged(assetId, locked);
+    }
+
+    /**
      * @dev Queries the fractional balance of an investor at a specific snapshot ID.
      */
     function balanceOfAtSnapshot(
@@ -192,6 +208,10 @@ contract AssetToken is ERC1155, Ownable, ReentrancyGuard, IAssetToken {
     ) internal virtual override {
         for (uint256 i = 0; i < ids.length; i++) {
             uint256 id = ids[i];
+            require(
+                from == address(0) || to == address(0) || !transfersLocked[id],
+                "Transfers locked: property sale in progress"
+            );
             uint256 snapId = currentSnapshotId[id];
             if (snapId > 0) {
                 if (from != address(0) && !_snapshotRecorded[id][snapId][from]) {

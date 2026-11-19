@@ -23,9 +23,16 @@ interface IAssetToken is IERC1155 {
     );
 
     function tokenizeAsset(uint256 assetId, address recipient) external returns (bool);
+    function tokenize(uint256 assetId) external returns (bool);
+    function tokenizeAssetByOwner(uint256 assetId) external returns (bool);
     function totalShares(uint256 assetId) external view returns (uint256);
     function isTokenized(uint256 assetId) external view returns (bool);
     function getAssetRegistry() external view returns (address);
+    function getInitialReferencePrice(uint256 assetId) external view returns (uint256);
+
+    // Freezes holder-to-holder transfers of an asset while a full-property sale vote runs
+    function setTransfersLocked(uint256 assetId, bool locked) external;
+    function transfersLocked(uint256 assetId) external view returns (bool);
 
     // Snapshot mechanism for Governance & Profit Distribution modules
     function createSnapshot(uint256 assetId) external returns (uint256);

@@ -36,6 +36,12 @@ interface IAssetRegistry {
     event AssetApproved(uint256 indexed assetId, address indexed verifier);
     event AssetRejected(uint256 indexed assetId, address indexed verifier, string reason);
     event AssetMarkedTokenized(uint256 indexed assetId, address indexed tokenContract);
+    event AssetValuationUpdated(
+        uint256 indexed assetId,
+        uint256 newValuationLKR,
+        uint256 oldValuationLKR,
+        uint256 timestamp
+    );
 
     function registerAsset(
         string calldata name,
@@ -49,8 +55,10 @@ interface IAssetRegistry {
     function approveAsset(uint256 assetId) external;
     function rejectAsset(uint256 assetId, string calldata reason) external;
     function markTokenized(uint256 assetId) external;
+    function updateAssetValuation(uint256 assetId, uint256 newValuationLKR) external;
 
     function getAsset(uint256 assetId) external view returns (AssetRecord memory);
     function isAssetApproved(uint256 assetId) external view returns (bool);
     function isAssetTokenized(uint256 assetId) external view returns (bool);
+    function getInitialReferencePrice(uint256 assetId) external view returns (uint256);
 }

@@ -40,9 +40,9 @@ describe("Asset Tokenization Research Platform - Evaluation Test Suite (TC01 - T
     governance = await AssetGovernance.deploy(await assetToken.getAddress());
     await governance.waitForDeployment();
 
-    // 5. Deploy ProfitDistribution
-    const ProfitDistribution = await ethers.getContractFactory("ProfitDistribution");
-    distribution = await ProfitDistribution.deploy(await assetToken.getAddress());
+    // 5. Deploy SnapshotProfitDistribution (Baseline Benchmark)
+    const SnapshotProfitDistribution = await ethers.getContractFactory("SnapshotProfitDistribution");
+    distribution = await SnapshotProfitDistribution.deploy(await assetToken.getAddress());
     await distribution.waitForDeployment();
 
     // Authorize Governance and ProfitDistribution for snapshots on AssetToken
@@ -102,7 +102,7 @@ describe("Asset Tokenization Research Platform - Evaluation Test Suite (TC01 - T
       // Unauthorized user attempts tokenization
       await expect(
         assetToken.connect(unauthorized).tokenizeAsset(1, unauthorized.address)
-      ).to.be.revertedWith("Caller is not owner or registry");
+      ).to.be.revertedWith("Caller is not authorized asset owner or admin");
     });
 
     it("TC03: Zero supply registration -> Reverts", async function () {
@@ -305,7 +305,7 @@ describe("Asset Tokenization Research Platform - Evaluation Test Suite (TC01 - T
       // Verify that AssetToken does not allow arbitrary URI modifications or unauthorized minting
       await expect(
         assetToken.connect(unauthorized).tokenizeAsset(1, unauthorized.address)
-      ).to.be.revertedWith("Caller is not owner or registry");
+      ).to.be.revertedWith("Caller is not authorized asset owner or admin");
 
       // Verify AssetRegistry rejects unauthorized status overrides
       await expect(

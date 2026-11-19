@@ -17,8 +17,17 @@ contract AssetRegistry is Ownable, IAssetRegistry {
     mapping(address => uint256[]) private _issuerAssets;
     uint256[] private _allAssetIds;
 
+    mapping(address => bool) public authorizedVerifiers;
+
     modifier onlyTokenContract() {
         require(msg.sender == assetTokenContract, "Caller is not AssetToken contract");
+        _;
+    }
+
+    modifier onlyVerifierOrOwner() {
+        if (!authorizedVerifiers[msg.sender]) {
+            _checkOwner();
+        }
         _;
     }
 
@@ -30,6 +39,14 @@ contract AssetRegistry is Ownable, IAssetRegistry {
     function setAssetTokenContract(address _tokenContract) external onlyOwner {
         require(_tokenContract != address(0), "Invalid token contract address");
         assetTokenContract = _tokenContract;
+    }
+
+    /**
+     * @dev Sets or revokes an authorized verification role.
+     */
+    function setAuthorizedVerifier(address verifier, bool isAuthorized) external onlyOwner {
+        require(verifier != address(0), "Invalid verifier address");
+        authorizedVerifiers[verifier] = isAuthorized;
     }
 
     /**
@@ -82,9 +99,9 @@ contract AssetRegistry is Ownable, IAssetRegistry {
     }
 
     /**
-     * @dev Admin approves asset after off-chain deed & valuation verification.
+     * @dev Authorized verifier or admin approves asset after off-chain deed & valuation verification.
      */
-    function approveAsset(uint256 assetId) external override onlyOwner {
+    function approveAsset(uint256 assetId) external override onlyVerifierOrOwner {
         AssetRecord storage asset = _assets[assetId];
         require(asset.assetId != 0, "Asset does not exist");
         require(asset.status == AssetStatus.Pending, "Asset is not pending");
@@ -94,15 +111,43 @@ contract AssetRegistry is Ownable, IAssetRegistry {
     }
 
     /**
-     * @dev Admin rejects asset if verification fails.
+     * @dev Authorized verifier or admin rejects asset if verification fails.
      */
-    function rejectAsset(uint256 assetId, string calldata reason) external override onlyOwner {
+    function rejectAsset(uint256 assetId, string calldata reason) external override onlyVerifierOrOwner {
         AssetRecord storage asset = _assets[assetId];
         require(asset.assetId != 0, "Asset does not exist");
         require(asset.status == AssetStatus.Pending, "Asset is not pending");
 
         asset.status = AssetStatus.Rejected;
         emit AssetRejected(assetId, msg.sender, reason);
+    }
+
+    /**
+     * @dev Updates approved net asset valuation without altering token supply.
+     * Triggers updated reference price per token.
+     */
+    function updateAssetValuation(uint256 assetId, uint256 newValuationLKR) external override onlyVerifierOrOwner {
+        require(newValuationLKR > 0, "Valuation must be > 0");
+        AssetRecord storage asset = _assets[assetId];
+        require(asset.assetId != 0, "Asset does not exist");
+        require(
+            asset.status == AssetStatus.Approved || asset.status == AssetStatus.Tokenized,
+            "Asset must be approved or tokenized"
+        );
+
+        uint256 oldValuation = asset.valuationLKR;
+        asset.valuationLKR = newValuationLKR;
+        emit AssetValuationUpdated(assetId, newValuationLKR, oldValuation, block.timestamp);
+    }
+
+    /**
+     * @dev Calculates initial token reference price: Approved Valuation / Total Shares.
+     */
+    function getInitialReferencePrice(uint256 assetId) external view override returns (uint256) {
+        AssetRecord memory asset = _assets[assetId];
+        require(asset.assetId != 0, "Asset does not exist");
+        require(asset.totalShares > 0, "Total shares must be > 0");
+        return asset.valuationLKR / asset.totalShares;
     }
 
     /**

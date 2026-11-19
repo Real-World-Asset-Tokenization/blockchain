@@ -37,6 +37,10 @@ contract ProfitDistribution is Ownable, ReentrancyGuard {
     IAssetToken public immutable assetToken;
     uint256 public nextRoundId = 1;
 
+    // Investors get at least this long to claim before the owner can close a round and take back what is
+    // left. Without it the owner could activate and immediately close, voiding every entitlement.
+    uint256 public constant MIN_CLAIM_WINDOW = 30 days;
+
     // roundId => DistributionRound
     mapping(uint256 => DistributionRound) public rounds;
     // assetId => array of roundIds
@@ -236,6 +240,7 @@ contract ProfitDistribution is Ownable, ReentrancyGuard {
         DistributionRound storage round = rounds[roundId];
         require(round.roundId != 0, "Round does not exist");
         require(round.status == RoundStatus.Active, "Round is not active");
+        require(block.timestamp >= round.activatedAt + MIN_CLAIM_WINDOW, "Claim window still open");
 
         round.status = RoundStatus.Closed;
         round.closedAt = block.timestamp;

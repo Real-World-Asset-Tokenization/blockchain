@@ -28,9 +28,11 @@ contract MockPaymentToken is ERC20, ERC20Permit, Ownable {
     }
 
     /**
-     * @dev Mint function for testing and demonstration faucet.
+     * @dev Mint function for testing and demonstration faucet. Restricted to the owner: an open
+     * mint lets anyone create unlimited balance. This contract is a TEST token only; production
+     * must use a real, audited stablecoin and never deploy this contract.
      */
-    function mint(address to, uint256 amount) external {
+    function mint(address to, uint256 amount) external onlyOwner {
         _mint(to, amount);
     }
 }

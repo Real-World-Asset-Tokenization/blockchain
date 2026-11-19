@@ -23,10 +23,17 @@ contract AssetToken is ERC1155, Ownable, ReentrancyGuard, IAssetToken {
     // Snapshot tracking for Governance & Profit Distribution modules
     // assetId => current snapshot ID
     mapping(uint256 => uint256) public currentSnapshotId;
-    // assetId => snapshotId => account => historical balance
-    mapping(uint256 => mapping(uint256 => mapping(address => uint256))) private _snapshotBalances;
-    // assetId => snapshotId => account => has recorded
-    mapping(uint256 => mapping(uint256 => mapping(address => bool))) private _snapshotRecorded;
+
+    // Per-account balance checkpoints (same design as OpenZeppelin's ERC20Snapshot). Before an account's
+    // balance changes, its balance is recorded once per snapshot. A lookup for snapshot N reads the first
+    // checkpoint with id >= N, so it stays correct even when several snapshots were taken between
+    // the account's transfers.
+    struct Checkpoints {
+        uint256[] ids;
+        uint256[] values;
+    }
+    // assetId => account => checkpoints
+    mapping(uint256 => mapping(address => Checkpoints)) private _checkpoints;
 
     // Authorized callers for taking snapshots (e.g. Governance or Profit Distribution contracts)
     mapping(address => bool) public authorizedCallers;
@@ -172,11 +179,34 @@ contract AssetToken is ERC1155, Ownable, ReentrancyGuard, IAssetToken {
     ) external view override returns (uint256) {
         require(snapshotId > 0 && snapshotId <= currentSnapshotId[assetId], "Invalid snapshotId");
 
-        if (_snapshotRecorded[assetId][snapshotId][account]) {
-            return _snapshotBalances[assetId][snapshotId][account];
-        }
+        Checkpoints storage cp = _checkpoints[assetId][account];
+        uint256 idx = _upperBound(cp.ids, snapshotId);
+        // No checkpoint at or after this snapshot: the balance has not changed since, so it is the current one.
+        return idx == cp.ids.length ? balanceOf(account, assetId) : cp.values[idx];
+    }
 
-        return balanceOf(account, assetId);
+    /// @dev Index of the first element of the ascending array `ids` that is >= `target`, or ids.length.
+    function _upperBound(uint256[] storage ids, uint256 target) private view returns (uint256) {
+        uint256 low = 0;
+        uint256 high = ids.length;
+        while (low < high) {
+            uint256 mid = (low + high) / 2;
+            if (ids[mid] < target) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+        return low;
+    }
+
+    function _recordCheckpoint(uint256 assetId, address account, uint256 snapId) private {
+        Checkpoints storage cp = _checkpoints[assetId][account];
+        uint256 n = cp.ids.length;
+        if (n == 0 || cp.ids[n - 1] < snapId) {
+            cp.ids.push(snapId);
+            cp.values.push(balanceOf(account, assetId));
+        }
     }
 
     function totalShares(uint256 assetId) external view override returns (uint256) {
@@ -214,14 +244,8 @@ contract AssetToken is ERC1155, Ownable, ReentrancyGuard, IAssetToken {
             );
             uint256 snapId = currentSnapshotId[id];
             if (snapId > 0) {
-                if (from != address(0) && !_snapshotRecorded[id][snapId][from]) {
-                    _snapshotBalances[id][snapId][from] = balanceOf(from, id);
-                    _snapshotRecorded[id][snapId][from] = true;
-                }
-                if (to != address(0) && !_snapshotRecorded[id][snapId][to]) {
-                    _snapshotBalances[id][snapId][to] = balanceOf(to, id);
-                    _snapshotRecorded[id][snapId][to] = true;
-                }
+                if (from != address(0)) _recordCheckpoint(id, from, snapId);
+                if (to != address(0)) _recordCheckpoint(id, to, snapId);
             }
         }
 

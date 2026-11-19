@@ -50,6 +50,14 @@ contract PropertySale is Ownable, ReentrancyGuard, EIP712 {
     uint8 public constant VOTE_YES = 1;
     uint8 public constant VOTE_NO = 2;
 
+    // A vote freezes holder transfers, so it must be bounded.
+    uint256 public constant MAX_VOTING_DURATION = 30 days;
+    // After holders approve, the platform has this long to confirm the legal transfer. If it does not,
+    // anyone can return the escrow to the buyer and unfreeze trading (no permanent lock-up).
+    uint256 public constant SETTLEMENT_DEADLINE = 90 days;
+    // offerId => time the offer became Approved
+    mapping(uint256 => uint256) public approvedAt;
+
     bytes32 public constant VOTE_TYPEHASH = keccak256("Vote(uint256 offerId,uint8 support)");
 
     IAssetToken public immutable assetToken;
@@ -75,6 +83,7 @@ contract PropertySale is Ownable, ReentrancyGuard, EIP712 {
     event SaleSettled(uint256 indexed offerId, bytes32 merkleRoot);
     event SaleClaimed(uint256 indexed offerId, address indexed claimant, uint256 amount);
     event OfferCancelled(uint256 indexed offerId, uint256 refunded);
+    event StaleApprovalReclaimed(uint256 indexed offerId, address indexed caller);
 
     constructor(address _assetToken) Ownable(msg.sender) EIP712("PropertySale", "1") {
         require(_assetToken != address(0), "Invalid asset token address");
@@ -97,8 +106,16 @@ contract PropertySale is Ownable, ReentrancyGuard, EIP712 {
         require(paymentToken != address(0), "Invalid payment token");
         require(price > 0, "Price must be > 0");
         require(votingDuration > 0, "Voting duration must be > 0");
+        require(votingDuration <= MAX_VOTING_DURATION, "Voting duration too long");
 
+        // The escrow must really hold `price`. A fee-on-transfer or malicious token would otherwise record
+        // a price larger than what arrived, and later claims would be paid out of other offers' escrow.
+        uint256 balanceBefore = IERC20(paymentToken).balanceOf(address(this));
         IERC20(paymentToken).safeTransferFrom(msg.sender, address(this), price);
+        require(
+            IERC20(paymentToken).balanceOf(address(this)) - balanceBefore == price,
+            "Escrow received less than price"
+        );
 
         uint256 offerId = nextOfferId++;
         offers[offerId] = Offer({
@@ -182,6 +199,18 @@ contract PropertySale is Ownable, ReentrancyGuard, EIP712 {
         _refund(offer);
     }
 
+    /**
+     * @dev Safety exit: if holders approved but the platform never confirmed the sale within
+     * SETTLEMENT_DEADLINE, anyone can return the escrow to the buyer and unfreeze trading.
+     */
+    function reclaimStaleApproval(uint256 offerId) external nonReentrant {
+        Offer storage offer = offers[offerId];
+        require(offer.status == OfferStatus.Approved, "Offer is not approved");
+        require(block.timestamp > approvedAt[offerId] + SETTLEMENT_DEADLINE, "Settlement deadline not reached");
+        _refund(offer);
+        emit StaleApprovalReclaimed(offerId, msg.sender);
+    }
+
     // ----------------------------------------------------------------- voting
 
     function castVote(uint256 offerId, uint8 support) external nonReentrant {
@@ -239,6 +268,7 @@ contract PropertySale is Ownable, ReentrancyGuard, EIP712 {
 
         if (offer.yesVotes * 2 > supply) {
             offer.status = OfferStatus.Approved;
+            approvedAt[offerId] = block.timestamp;
         } else if (offer.noVotes * 2 >= supply || block.timestamp > offer.votingEndsAt) {
             offer.status = OfferStatus.Rejected;
             liveOfferOf[offer.assetId] = 0;

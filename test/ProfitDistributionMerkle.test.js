@@ -268,7 +268,14 @@ describe("ProfitDistribution Contract - Merkle Settlement Suite", function () {
       await distribution.connect(investorA).claimProfit(1n, PAYOUT_A, proofA);
     });
 
+    it("Admin cannot close a round before the minimum claim window ends", async function () {
+      await expect(distribution.connect(admin).closeDistributionRound(1n))
+        .to.be.revertedWith("Claim window still open");
+    });
+
     it("Admin closes round and recovers unclaimed funds safely", async function () {
+      await ethers.provider.send("evm_increaseTime", [30 * 24 * 3600 + 1]);
+      await ethers.provider.send("evm_mine", []);
       const initialAdminBal = await paymentToken.balanceOf(admin.address);
       const expectedUnclaimed = TOTAL_PROFIT - PAYOUT_A;
 
@@ -285,6 +292,8 @@ describe("ProfitDistribution Contract - Merkle Settlement Suite", function () {
     });
 
     it("Investor cannot claim from a closed round", async function () {
+      await ethers.provider.send("evm_increaseTime", [30 * 24 * 3600 + 1]);
+      await ethers.provider.send("evm_mine", []);
       await distribution.connect(admin).closeDistributionRound(1n);
 
       await expect(
